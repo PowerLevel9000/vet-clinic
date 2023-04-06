@@ -31,6 +31,9 @@ CREATE TABLE animals (
   weight_kg real,
 );
 
+-- day-2 TABLE alter
+ALTER TABLE animals ADD COLUMN species TEXT;
+
 -- checking Table structure
 \ d animals -- viewing table 
 SELECT
