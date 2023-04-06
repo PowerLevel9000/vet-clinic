@@ -63,15 +63,15 @@ SELECT
 FROM
   animals
 WHERE
-  escape_attempts < '3';
+  escape_attempts < '3'
+  AND neutered = '1';
 
 /* output expected 
  name
  ---------
  Agumon
  Gabumon
- Pikachu
- (3 rows)
+ (2 rows)
  */
 --  List the date of birth of all animals named either "Agumon" or "Pikachu".
 SELECT
@@ -162,9 +162,9 @@ WHERE
   AND weight_kg <= '17.3';
 
 /* output expected
-  name
----------
+ name
+ ---------
  Pikachu
  Devimon
-(2 rows)
+ (2 rows)
  */
