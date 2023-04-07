@@ -30,13 +30,55 @@ CREATE TABLE animals (
   neutered BOOLEAN NOT NULL,
   weight_kg REAL NOT NULL
 );
+-- ************************************************************************* line COMMENTS ARE EXPECTED OUTPUTS **************************************************************
+
 
 -- day-2 TABLE alter
-ALTER TABLE animals ADD COLUMN species TEXT;
+ALTER TABLE
+  animals
+ADD
+  COLUMN species TEXT;
 
 -- checking Table structure
-\ d animals -- viewing table 
+\ d animals;
+
+-- viewing table 
 SELECT
   *
 from
   animals;
+
+-- DAY-3 TABLE CREATION OWNER
+CREATE TABLE owners (
+  id BIGSERIAL NOT NULL PRIMARY KEY,
+  full_name varchar(50) NOT NULL,
+  age INT NOT NULL
+);
+
+-- CREATE TABLE
+\ d owners;
+
+--                                      Table "public.owners"
+--   Column   |         Type          | Collation | Nullable |              Default
+-- -----------+-----------------------+-----------+----------+------------------------------------
+--  id        | bigint                |           | not null | nextval('owners_id_seq'::regclass)
+--  full_name | character varying(50) |           | not null |
+--  age       | integer               |           | not null |
+-- Indexes:
+--     "owners_pkey" PRIMARY KEY, btree (id)
+-- TABLE CREATION species
+CREATE TABLE species (
+  id BIGSERIAL NOT NULL PRIMARY KEY,
+  name varchar(100) NOT NULL
+);
+
+-- CREATE TABLE
+\ d species;
+
+--                                     Table "public.species"
+--  Column |          Type          | Collation | Nullable |               Default
+-- --------+------------------------+-----------+----------+-------------------------------------
+--  id     | bigint                 |           | not null | nextval('species_id_seq'::regclass)
+--  name   | character varying(100) |           | not null |
+-- Indexes:
+--     "species_pkey" PRIMARY KEY, btree (id)
