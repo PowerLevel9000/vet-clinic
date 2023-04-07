@@ -22,13 +22,13 @@
  */
 -- creating animal table
 CREATE TABLE animals (
-  id int,
+  id INT NOT NULL PRIMARY KEY,
   --i thought i should add serial but seen int in project
-  name varchar(255),
-  date_of_birth date,
-  escape_attempts int,
-  neutered boolean,
-  weight_kg real,
+  name VARCHAR(255) NOT NULL,
+  date_of_birth DATE NOT NULL,
+  escape_attempts INT NOT NULL,
+  neutered BOOLEAN NOT NULL,
+  weight_kg REAL NOT NULL
 );
 
 -- day-2 TABLE alter
