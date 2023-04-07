@@ -78,7 +78,7 @@ After you're finished please remove all the comments and instructions!
 
 ### Key Features <a name="key-features"></a>
 
-> Describe between 1-3 key features of the application.
+
 
 - **database**
 - **query for data**
@@ -98,7 +98,7 @@ none yet
 
 ## 💻 Getting Started <a name="getting-started"></a>
 
-> Describe how a new developer could make use of your project.
+
 
 To get a local copy up and running, follow these steps.
 
@@ -125,7 +125,6 @@ Loading ...
 
 ## 👥 Authors <a name="authors"></a>
 
-> Mention all of the collaborators of this project.
 
 👤 **Author1**
 
@@ -140,8 +139,8 @@ Loading ...
 
 ## 🔭 Future Features <a name="future-features"></a>
 
-> Describe 1 - 3 features you will add to the project.
 manipulation of the data
+TRANCSECTIONS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -159,7 +158,6 @@ Feel free to check the [issues page](https://github.com/PowerLevel9000/vet-clini
 
 ## ⭐️ Show your support <a name="support"></a>
 
-> Write a message to encourage readers to support your project
 
 If you like this project give it a star ⭐ or buy me a coffee 🍵
 
