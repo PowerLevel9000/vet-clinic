@@ -77,9 +77,6 @@ After you're finished please remove all the comments and instructions!
 <!-- Features -->
 
 ### Key Features <a name="key-features"></a>
-
-
-
 - **database**
 - **query for data**
 - **table insertion**
@@ -97,8 +94,6 @@ none yet
 <!-- GETTING STARTED -->
 
 ## 💻 Getting Started <a name="getting-started"></a>
-
-
 
 To get a local copy up and running, follow these steps.
 
