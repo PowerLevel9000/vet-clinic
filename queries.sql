@@ -307,3 +307,52 @@ FROM
 --  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | pokemon
 --  11 | Ditto      | 2022-05-14    |               4 | t        |        22 | pokemon
 -- (11 rows)
+/* Now, take a deep breath and... Inside a transaction delete all records in the animals table, then roll back the transaction.
+ After the rollback verify if all records in the animals table still exists. After that, you can start breathing as usual ;)  */
+/* (✿◡‿◡)(✿◡‿◡)(✿◡‿◡)[]~(￣▽￣)~*[]~(￣▽￣)~*[]~(￣▽￣)~*[]~(￣▽￣)~*[]~(￣▽￣)~*[]~(￣▽￣)~*(✿◡‿◡)(✿◡‿◡)(❁´◡`❁) */
+BEGIN;
+
+-- BEGIN
+DELETE FROM
+  animals;
+
+-- DELETE 11
+\ d --                List of relations
+--  Schema |      Name      |   Type   |  Owner
+-- --------+----------------+----------+----------
+--  public | animals        | table    | postgres
+--  public | car            | table    | postgres
+--  public | car_id_seq     | sequence | postgres
+--  public | persons        | table    | postgres
+--  public | persons_id_seq | sequence | postgres
+-- (5 rows)
+SELECT
+  *
+FROM
+  animals;
+
+--  id | name | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------+---------------+-----------------+----------+-----------+---------
+-- (0 rows)
+ROLLBACK;
+
+-- ROLLBACK
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 | digimon
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 | digimon
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 | digimon
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |      -5.7 | digimon
+--   8 | Angemon    | 2005-06-12    |               1 | t        |       -45 | digimon
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 | digimon
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 | pokemon
+--   5 | Charmander | 2020-02-08    |               0 | f        |       -11 | pokemon
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |    -12.13 | pokemon
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | pokemon
+--  11 | Ditto      | 2022-05-14    |               4 | t        |        22 | pokemon
+-- (11 rows)
