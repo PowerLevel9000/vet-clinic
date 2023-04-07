@@ -451,4 +451,140 @@ FROM
 COMMIT;
 
 -- COMMIT
+/*
+ Write queries to answer the following questions:
+ 
+ How many animals are there?
+ How many animals have never tried to escape?
+ What is the average weight of animals?
+ Who escapes the most, neutered or not neutered animals?
+ What is the minimum and maximum weight of each type of animal?
+ What is the average number of escape attempts per animal type of those born between 1990 and 2000?
+ */
+SELECT
+  MAX(id)
+FROM
+  animals;
 
+--  max
+-- -----
+--   10
+-- (1 row)
+SELECT
+  COUNT(*)
+FROM
+  animals
+WHERE
+  escape_attempts = 0;
+
+count -------
+2 (1 row)
+SELECT
+  AVG(weight_kg)
+FROM
+  animals;
+
+--         avg
+-- --------------------
+--  15.549999904632568
+-- (1 row)
+SELECT
+  ROUND(AVG(weight_kg))
+FROM
+  animals;
+
+--  round
+-- -------
+--     16
+-- (1 row)
+SELECT
+  neutered,
+  SUM(escape_attempts)
+FROM
+  animals
+GROUP BY
+  neutered;
+
+--  neutered | sum
+-- ----------+-----
+--  f        |   4
+--  t        |  20
+-- (2 rows)
+SELECT
+  neutered,
+  SUM(escape_attempts)
+FROM
+  animals
+GROUP BY
+  neutered
+ORDER BY
+  sum DESC
+LIMIT
+  1;
+
+--  neutered | sum
+-- ----------+-----
+--  t        |  20
+-- (1 row)
+SELECT
+  neutered,
+  SUM(escape_attempts) AS max_attempt_made
+FROM
+  animals
+GROUP BY
+  neutered
+HAVING
+  SUM(escape_attempts) = (
+    SELECT
+      MAX(total_escapes)
+    FROM
+      (
+        SELECT
+          neutered,
+          SUM(escape_attempts) AS total_escapes
+        FROM
+          animals
+        GROUP BY
+          neutered
+      ) AS max_subquery
+  );
+
+--  neutered | max_attempt_made
+-- ----------+------------------
+--  t        |               20
+-- (1 row)
+SELECT
+  species,
+  MAX(weight_kg),
+  MIN(weight_kg)
+FROM
+  animals
+GROUP BY
+  species;
+
+--  species | max | min
+-- ---------+-----+-----
+--  pokemon |  17 |  11
+--  digimon |  45 | 5.7
+-- (2 rows)
+^ --  SELECT species, AVG(escape_attempts) AS average_attempts from animals
+--  WHERE date_of_birth BETWEEN DATE '1990-12-31' AND '2000-01-01'
+--  GROUP BY species;
+--  species |  average_attempts
+-- ---------+--------------------
+--  pokemon | 3.0000000000000000
+-- (1 row)
+SELECT
+  species,
+  date_of_birth
+FROM
+  animals
+WHERE
+  date_of_birth BETWEEN DATE '1990-12-31'
+  AND '2000-01-01';
+
+--  species | date_of_birth
+-- ---------+---------------
+--  pokemon | 1993-04-02
+--  pokemon | 1998-10-13
+-- (2 rows)
