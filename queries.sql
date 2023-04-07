@@ -588,3 +588,152 @@ WHERE
 --  pokemon | 1993-04-02
 --  pokemon | 1998-10-13
 -- (2 rows)
+-- day 3 query
+/* Write queries (using JOIN) to answer the following questions:
+ 
+ What animals belong to Melody Pond?
+ */
+SELECT
+  animals.name
+FROM
+  animals
+  JOIN owners ON animals.owner_id = owners.id
+WHERE
+  owners.full_name = 'Melody Pond';
+
+--       name
+-- ------------
+--  Blossom
+--  Squirtle
+--  Charmander
+-- (3 rows)
+/*List of all animals that are pokemon (their type is Pokemon).*/
+SELECT
+  animals.name
+FROM
+  animals
+  JOIN species ON animals.species_id = species.id
+WHERE
+  species.name = 'Pokemon';
+
+--     name
+-- ------------
+--  Blossom
+--  Squirtle
+--  Charmander
+--  Pikachu
+-- (4 rows)
+/* List all owners and their animals, remember to include those that don't own any animal. */
+SELECT
+  owners.full_name,
+  COALESCE(animals.name, 'not own animal')
+FROM
+  owners
+  LEFT JOIN animals ON owners.id = animals.owner_id;
+
+--     full_name    |    coalesce
+-- -----------------+----------------
+--  Sam Smith       | Agumon
+--  Melody Pond     | Blossom
+--  Melody Pond     | Squirtle
+--  Melody Pond     | Charmander
+--  Dean Winchester | Boarmon
+--  Dean Winchester | Angemon
+--  Jodie Whittaker | not own animal
+--  Bob             | Devimon
+--  Bob             | Plantmon
+--  Jennifer Orwell | Pikachu
+--  Jennifer Orwell | Gabumon
+-- (11 rows)
+/*List all Digimon owned by Jennifer Orwell.*/
+SELECT
+  animals.name
+FROM
+  owners
+  JOIN animals ON owners.id = animals.owner_id
+  JOIN species ON animals.species_id = species.id
+WHERE
+  owners.full_name = 'Jennifer Orwell'
+  AND species.name = 'Digimon';
+
+-- ---------
+--  Gabumon
+-- (1 row)
+/*List all animals owned by Dean Winchester that haven't tried to escape.*/
+SELECT
+  animals.name
+FROM
+  owners
+  JOIN animals ON owners.id = animals.owner_id
+WHERE
+  owners.full_name = 'Dean Winchester'
+  AND animals.escape_attempts = 0;
+
+--    name
+-- ------
+-- (0 rows)
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species_id | owner_id
+-- ----+------------+---------------+-----------------+----------+-----------+------------+----------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 |          1 |        1
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 |          1 |        2
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 |          2 |        2
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |       5.7 |          1 |        3
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 |          1 |        3
+--   8 | Angemon    | 2005-06-12    |               1 | t        |        45 |          1 |        5
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 |          1 |        5
+--   5 | Charmander | 2020-02-08    |               0 | f        |        11 |          2 |        4
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |     12.13 |          2 |        4
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 |          2 |        4
+-- (10 rows)
+SELECT
+  *
+from
+  owners;
+
+--  id |    full_name    | age
+-- ----+-----------------+-----
+--   1 | Sam Smith       |  34
+--   4 | Melody Pond     |  77
+--   5 | Dean Winchester |  14
+--   6 | Jodie Whittaker |  38
+--   3 | Bob             |  45
+--   2 | Jennifer Orwell |  19
+-- (6 rows)
+-- vet_clinic = #
+/*Who owns the most animals?*/
+SELECT
+  owners.full_name,
+  COUNT(animals.id) AS num_animals
+FROM
+  owners
+  LEFT JOIN animals ON owners.id = animals.owner_id
+GROUP BY
+  owners.id
+ORDER BY
+  num_animals DESC
+LIMIT
+  1;
+
+--   full_name  | num_animals
+-- -------------+-------------
+--  Melody Pond |           3
+-- (1 row)
+/*How many animals are there per species?*/
+SELECT
+  species.name AS species_name,
+  COUNT(animals.id) AS num_animals
+FROM
+  animals
+  JOIN species ON animals.species_id = species.id
+GROUP BY
+  species.id;
+--    species_name | num_animals
+-- --------------+-------------
+--  Digimon      |           6
+--  Pokemon      |           4
+-- (2 rows)
