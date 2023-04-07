@@ -15,7 +15,7 @@
  page "Notes for Windows users" for details.
  Type "help" for help.
  
- vet_clinic=# SELECT * from animals;
+ SELECT * from animals;
  id |  name   | date_of_birth | escape_attempts | neutered | weight_kg
  ----+---------+---------------+-----------------+----------+-----------
  1 | Agumon  | 2020-02-03    |               0 | t        |     10.23
@@ -168,3 +168,142 @@ WHERE
  Devimon
  (2 rows)
  */
+--  DAY 2 QUERIES
+-- ************************************************************************* line COMMENTS ARE EXPECTED OUTPUTS **************************************************************
+/*Inside a transaction update the animals table by setting the species column to unspecified. Verify that change was made. Then roll back the change and verify that the species columns went back to the state before the transaction.
+ */
+BEGIN;
+
+-- BEGIN
+UPDATE
+  animals
+SET
+  species = 'unspecified';
+
+-- UPDATE 11
+-- SELECT * FROM animals;
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg |   species
+-- ----+------------+---------------+-----------------+----------+-----------+-------------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 | unspecified
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 | unspecified
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 | unspecified
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 | unspecified
+--   5 | Charmander | 2020-02-08    |               0 | f        |       -11 | unspecified
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |      -5.7 | unspecified
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |    -12.13 | unspecified
+--   8 | Angemon    | 2005-06-12    |               1 | t        |       -45 | unspecified
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 | unspecified
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | unspecified
+--  11 | Ditto      | 2022-05-14    |               4 | t        |        22 | unspecified
+-- (11 rows)
+ROLLBACK;
+
+-- ROLLBACK
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 |
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 |
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 |
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 |
+--   5 | Charmander | 2020-02-08    |               0 | f        |       -11 |
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |      -5.7 |
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |    -12.13 |
+--   8 | Angemon    | 2005-06-12    |               1 | t        |       -45 |
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 |
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 |
+--  11 | Ditto      | 2022-05-14    |               4 | t        |        22 |
+-- (11 rows)
+/*
+ Inside a transaction:
+ 
+ Update the animals table by setting the species column to digimon for all animals that have a name ending in mon.
+ Update the animals table by setting the species column to pokemon for all animals that don't have species already set.
+ Commit the transaction.
+ Verify that change was made and persists after commit.
+ 
+ */
+BEGIN;
+
+-- BEGIN
+UPDATE
+  animals
+SET
+  species = 'digimon'
+WHERE
+  name LIKE '%mon';
+
+-- UPDATE 6
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 |
+--   5 | Charmander | 2020-02-08    |               0 | f        |       -11 |
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |    -12.13 |
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 |
+--  11 | Ditto      | 2022-05-14    |               4 | t        |        22 |
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 | digimon
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 | digimon
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 | digimon
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |      -5.7 | digimon
+--   8 | Angemon    | 2005-06-12    |               1 | t        |       -45 | digimon
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 | digimon
+-- (11 rows)
+UPDATE
+  animals
+SET
+  species = 'pokemon'
+WHERE
+  species IS NULL;
+
+UPDATE
+  5
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 | digimon
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 | digimon
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 | digimon
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |      -5.7 | digimon
+--   8 | Angemon    | 2005-06-12    |               1 | t        |       -45 | digimon
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 | digimon
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 | pokemon
+--   5 | Charmander | 2020-02-08    |               0 | f        |       -11 | pokemon
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |    -12.13 | pokemon
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | pokemon
+--  11 | Ditto      | 2022-05-14    |               4 | t        |        22 | pokemon
+-- (11 rows)
+COMMIT;
+
+-- COMMIT
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 | digimon
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 | digimon
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 | digimon
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |      -5.7 | digimon
+--   8 | Angemon    | 2005-06-12    |               1 | t        |       -45 | digimon
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 | digimon
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 | pokemon
+--   5 | Charmander | 2020-02-08    |               0 | f        |       -11 | pokemon
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |    -12.13 | pokemon
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | pokemon
+--  11 | Ditto      | 2022-05-14    |               4 | t        |        22 | pokemon
+-- (11 rows)
