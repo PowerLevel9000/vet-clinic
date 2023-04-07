@@ -356,3 +356,99 @@ FROM
 --  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | pokemon
 --  11 | Ditto      | 2022-05-14    |               4 | t        |        22 | pokemon
 -- (11 rows)
+/* Inside a transaction:
+ 
+ Delete all animals born after Jan 1st, 2022.
+ Create a savepoint for the transaction.
+ Update all animals' weight to be their weight multiplied by -1.
+ Rollback to the savepoint
+ Update all animals' weights that are negative to be their weight multiplied by -1.
+ Commit transaction
+ */
+BEGIN;
+
+-- BEGIN
+DELETE FROM
+  animals
+WHERE
+  date_of_birth > '2022-01-01';
+
+-- DELETE 1
+SAVEPOINT dateOfBirth;
+
+-- SAVEPOINT
+UPDATE
+  animals
+SET
+  weight_kg = weight_kg * -1;
+
+-- UPDATE 10
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |    -10.23 | digimon
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |        -8 | digimon
+--   4 | Devimon    | 2017-05-12    |               5 | t        |       -11 | digimon
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |       5.7 | digimon
+--   8 | Angemon    | 2005-06-12    |               1 | t        |        45 | digimon
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |     -20.4 | digimon
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |    -15.04 | pokemon
+--   5 | Charmander | 2020-02-08    |               0 | f        |        11 | pokemon
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |     12.13 | pokemon
+--  10 | Blossom    | 1998-10-13    |               3 | t        |       -17 | pokemon
+-- (10 rows)
+ROLLBACK TO dateOfBirth;
+
+-- ROLLBACK
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 | digimon
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 | digimon
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 | digimon
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |      -5.7 | digimon
+--   8 | Angemon    | 2005-06-12    |               1 | t        |       -45 | digimon
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 | digimon
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 | pokemon
+--   5 | Charmander | 2020-02-08    |               0 | f        |       -11 | pokemon
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |    -12.13 | pokemon
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | pokemon
+-- (10 rows)
+UPDATE
+  animals
+SET
+  weight_kg = weight_kg * -1
+WHERE
+  weight_kg < 0;
+
+-- UPDATE 4
+SELECT
+  *
+FROM
+  animals;
+
+--  id |    name    | date_of_birth | escape_attempts | neutered | weight_kg | species
+-- ----+------------+---------------+-----------------+----------+-----------+---------
+--   6 | Plantmon   | 2021-11-15    |               2 | t        |       5.7 | digimon
+--   8 | Angemon    | 2005-06-12    |               1 | t        |        45 | digimon
+--   5 | Charmander | 2020-02-08    |               0 | f        |        11 | pokemon
+--   7 | Squirtle   | 1993-04-02    |               3 | f        |     12.13 | pokemon
+--   1 | Agumon     | 2020-02-03    |               0 | t        |     10.23 | digimon
+--   2 | Gabumon    | 2018-11-15    |               2 | t        |         8 | digimon
+--   4 | Devimon    | 2017-05-12    |               5 | t        |        11 | digimon
+--   9 | Boarmon    | 2005-06-07    |               7 | t        |      20.4 | digimon
+--   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 | pokemon
+--  10 | Blossom    | 1998-10-13    |               3 | t        |        17 | pokemon
+-- (10 rows)
+COMMIT;
+
+-- COMMIT
+
