@@ -77,8 +77,6 @@ After you're finished please remove all the comments and instructions!
 <!-- Features -->
 
 ### Key Features <a name="key-features"></a>
-
-
 - **database**
 - **query for data**
 - **table insertion**
@@ -96,7 +94,6 @@ none yet
 <!-- GETTING STARTED -->
 
 ## 💻 Getting Started <a name="getting-started"></a>
-
 
 To get a local copy up and running, follow these steps.
 
@@ -138,6 +135,7 @@ Loading ...
 ## 🔭 Future Features <a name="future-features"></a>
 
 manipulation of the data
+TRANCSECTIONS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
