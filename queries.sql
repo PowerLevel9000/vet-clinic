@@ -732,8 +732,212 @@ FROM
   JOIN species ON animals.species_id = species.id
 GROUP BY
   species.id;
+
 --    species_name | num_animals
 -- --------------+-------------
 --  Digimon      |           6
 --  Pokemon      |           4
 -- (2 rows)
+-- day - 4 query
+/* Who was the last animal seen by William Tatcher? */
+SELECT
+  vets.name AS VETS,
+  animals.name AS last_Visit_by
+FROM
+  animals
+  JOIN visits ON visits.animal_id = animals.species_id
+  JOIN vets ON visits.vet_id = vets.id
+WHERE
+  vets.name = 'William Tatcher'
+ORDER BY
+  date_of_visit DESC;
+
+SELECT
+  vets.name AS VETS,
+  animals.name AS last_Visit_by
+FROM
+  animals
+  JOIN visits ON visits.animal_id = animals.species_id
+  JOIN vets ON visits.vet_id = vets.id
+WHERE
+  vets.name = 'William Tatcher'
+ORDER BY
+  date_of_visit DESC
+LIMIT
+  1;
+
+--          vets       | last_visit_by
+-- ------------------+---------------
+--  William Tatcher | Blossom
+/*How many different animals did Stephanie Mendez see?*/
+SELECT
+  vets.name AS VETS,
+  species.name AS last_Visit_by
+FROM
+  species
+  JOIN visits ON visits.animal_id = species.id
+  JOIN vets ON visits.vet_id = vets.id
+WHERE
+  vets.name = 'Stephanie Mendez'
+ORDER BY
+  date_of_visit DESC;
+
+SELECT
+  vets.name AS VETS,
+  count(DISTINCT species.name) AS different_animals
+FROM
+  species
+  JOIN visits ON visits.animal_id = species.id
+  JOIN vets ON visits.vet_id = vets.id
+WHERE
+  vets.name = 'Stephanie Mendez'
+GROUP BY
+  vets.name;
+
+--        vets       | different_animals
+-- ------------------+-------------------
+--  Stephanie Mendez |                 2
+/*List all vets and their specialties, including vets with no specialties.*/
+SELECT
+  vets.name AS vet,
+  species.name AS specializations
+FROM
+  vets
+  JOIN specializations ON vet_id = vets.id
+  JOIN species ON species_id = species.id
+ORDER BY
+  vets.name;
+
+--         vet       |  specializations
+-- ------------------+---------
+--  Jack Harkness    | Digimon
+--  Stephanie Mendez | Pokemon
+--  Stephanie Mendez | Digimon
+--  William Tatcher  | Pokemon
+-- (4 rows)
+----------------------------------------------------------------------------------------
+/* List all animals that visited Stephanie Mendez between April 1st and August 30th, 2020. */
+SELECT
+  visits.date_of_visit AS visited_date,
+  animals.name AS visitor
+FROM
+  visits
+  JOIN animals ON animal_id = animals.species_id
+  JOIN vets ON vet_id = vets.id
+WHERE
+  vets.name = 'Stephanie Mendez'
+  AND date_of_visit between DATE '2020-04-01'
+  AND '2020-08-30'
+ORDER BY
+  date_of_visit DESC;
+
+--  visited_date |  visitor
+-- --------------+------------
+--  2020-07-22   | Boarmon
+--  2020-07-22   | Angemon
+--  2020-07-22   | Devimon
+--  2020-07-22   | Plantmon
+--  2020-07-22   | Gabumon
+--  2020-07-22   | Agumon
+--  2020-05-24   | Blossom
+--  2020-05-24   | Squirtle
+--  2020-05-24   | Charmander
+--  2020-05-24   | Pikachu
+-- (10 rows)
+------------------------------------------------------------------------------
+/* What animal has the most visits to vets? */
+SELECT
+  animals.name AS animal,
+  count(*) AS most_VISITS
+FROM
+  visits
+  JOIN animals ON visits.animal_id = animals.species_id
+GROUP BY
+  animals.name
+ORDER BY
+  most_VISITS DESC
+LIMIT
+  1;
+
+------------------------------------------------------------------------------
+/*Who was Maisy Smith's first visit?*/
+SELECT
+  animals.name AS visited,
+  vets.name AS vet
+FROM
+  visits
+  JOIN animals ON animal_id = animals.species_id
+  JOIN vets ON vet_id = vets.id
+WHERE
+  vets.name = 'Maisy Smith'
+ORDER BY
+  date_of_visit ASC
+LIMIT
+  1;
+
+--  visited |     vet
+-- ---------+-------------
+--  Boarmon | Maisy Smith
+-- (1 row)
+------------------------------------------------------------------------------------
+/* Details for most recent visit: animal information, vet information, and date of visit */
+SELECT
+  vets.*,
+  animals.*,
+  visits.date_of_visit
+from
+  visits
+  JOIN animals ON animal_id = animals.species_id
+  JOIN vets ON vet_id = vets.id
+ORDER BY
+  date_of_visit DESC
+LIMIT
+  1;
+
+--  id |       name       | age | date_of_graduation | id |  name   | date_of_birth | escape_attempts | neutered | weight_kg | species_id | owner_id | date_of_visit
+-- ----+------------------+-----+--------------------+----+---------+---------------+-----------------+----------+-----------+------------+----------+---------------
+--   3 | Stephanie Mendez |  64 | 1981-05-04         |  9 | Boarmon | 2005-06-07    |               7 | t        |      20.4 |          1 |        5 | 2021-05-04
+--------------------------------------------------------------------------------------
+/* How many visits were with a vet that did not specialize in that animal's species? */
+/************************************************* EXPLANATION **************************************************************************/
+/* I refactor my data and i found a problem like i inserted species id instead of animal id thats why i am getting three times of the counter so 
+ division of three is helpful for now same with last query */
+SELECT
+  count(*) / 3
+FROM
+  visits
+  JOIN animals ON animals.id = visits.animal_id
+  JOIN vets ON vets.id = visits.vet_id
+WHERE
+  animals.species_id NOT IN (
+    SELECT
+      species_id
+    FROM
+      specializations
+    WHERE
+      vet_id = vets.id
+  ) --  counter
+  -- ---------
+  --        4
+  -- (1 row)
+  --------------------------------------------------------------------------------------
+  /* What specialty should Maisy Smith consider getting? Look for the species she gets the most. */
+  /* SEE line no 903 for explanation */
+SELECT
+  species.name,
+  count(*) / 3 AS counter
+FROM
+  visits
+  JOIN animals ON animals.id = visits.animal_id
+  JOIN species ON animals.species_id = species.id
+  JOIN vets ON vets.id = visits.vet_id
+WHERE
+  vets.name = 'Maisy Smith'
+GROUP BY
+  species.name;
+
+--   name   | counter
+-- ---------+---------
+--  Digimon |       3
+-- (1 row)
+--  so she should be specialist of digimon not pokemon
