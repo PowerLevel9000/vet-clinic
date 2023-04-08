@@ -114,7 +114,6 @@ commit;
 
 -- COMMIT
 /*view the table */
-
 SELECT
   *
 FROM
@@ -133,43 +132,85 @@ FROM
 --   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 |            |
 --  10 | Blossom    | 1998-10-13    |               3 | t        |        17 |            |
 -- (10 rows)
-
 --  day 4 creations 
-
 CREATE TABLE vets (
   id BIGSERIAL NOT NULL PRIMARY KEY,
   name varchar(100) NOT NULL,
   age INT NOT NULL,
   date_of_graduation DATE
 );
--- CREATE TABLE
 
+-- CREATE TABLE
+SELECT
+  *
+From
+  vets;
+
+--    id |       name       | age | date_of_graduation
+-- ----+------------------+-----+--------------------
+--   1 | William Tatcher  |  45 | 2000-04-23
+--   2 | Maisy Smith      |  26 | 2019-01-17
+--   3 | Stephanie Mendez |  64 | 1981-05-04
+--   4 | Jack Harkness    |  38 | 2008-06-08
 CREATE TABLE specializations (
-    vet_id INT NOT NULL,
-    species_id INT NOT NULL,
-    PRIMARY KEY (vet_id, species_id),
-    CONSTRAINT fk_specializations_vets
-        FOREIGN KEY (vet_id) REFERENCES vets (id),
-    CONSTRAINT fk_specializations_species
-        FOREIGN KEY (species_id) REFERENCES species (id)
+  vet_id INT NOT NULL,
+  species_id INT NOT NULL,
+  PRIMARY KEY (vet_id, species_id),
+  CONSTRAINT fk_specializations_vets FOREIGN KEY (vet_id) REFERENCES vets (id),
+  CONSTRAINT fk_specializations_species FOREIGN KEY (species_id) REFERENCES species (id)
 );
 
 -- CREATE TABLE
+SELECT
+  *
+From
+  specializations;
 
+--  vet_id | species_id
+-- --------+------------
+--       1 |          2
+--       3 |          2
+--       3 |          1
+--       4 |          1
+-- (4 rows)
 CREATE TABLE visits (
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    animal_id INT NOT NULL,
-    vet_id INT NOT NULL,
-    date_of_visit DATE NOT NULL,
-    CONSTRAINT fk_visits_animals
-        FOREIGN KEY (animal_id) REFERENCES animals (id),
-    CONSTRAINT fk_visits_vets
-        FOREIGN KEY (vet_id) REFERENCES vets (id)
+  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  animal_id INT NOT NULL,
+  vet_id INT NOT NULL,
+  date_of_visit DATE NOT NULL,
+  CONSTRAINT fk_visits_animals FOREIGN KEY (animal_id) REFERENCES animals (id),
+  CONSTRAINT fk_visits_vets FOREIGN KEY (vet_id) REFERENCES vets (id)
 );
 
 -- CREATE TABLE
+SELECT
+  *
+From
+  visits;
 
-\d ;
+--  id | animal_id | vet_id | date_of_visit
+-- ----+-----------+--------+---------------
+--   1 |         1 |      1 | 2020-05-24
+--   2 |         1 |      3 | 2020-07-22
+--   3 |         1 |      4 | 2021-02-02
+--   4 |         2 |      2 | 2020-01-05
+--   5 |         2 |      2 | 2020-03-08
+--   6 |         2 |      2 | 2020-05-14
+--   7 |         1 |      3 | 2021-05-04
+--   8 |         2 |      4 | 2021-02-24
+--   9 |         1 |      2 | 2019-12-21
+--  10 |         1 |      1 | 2020-08-10
+--  11 |         1 |      2 | 2021-04-07
+--  12 |         2 |      3 | 2019-09-29
+--  13 |         1 |      4 | 2020-10-03
+--  14 |         1 |      4 | 2020-11-04
+--  15 |         1 |      2 | 2019-01-24
+--  16 |         1 |      2 | 2019-05-15
+--  17 |         1 |      2 | 2020-02-27
+--  18 |         1 |      2 | 2020-08-03
+--  19 |         2 |      3 | 2020-05-24
+--  20 |         2 |      1 | 2021-01-11
+\ d;
 
 --                List of relations
 --  Schema |      Name       |   Type   |  Owner
@@ -189,8 +230,7 @@ CREATE TABLE visits (
 --  public | visits          | table    | postgres
 --  public | visits_id_seq   | sequence | postgres
 -- (14 rows)
-
-\d animals;
+\ d animals;
 
 --                           Table "public.animals"
 --      Column      |          Type          | Collation | Nullable | Default
@@ -209,4 +249,3 @@ CREATE TABLE visits (
 --     "fk_species_id" FOREIGN KEY (species_id) REFERENCES species(id)
 -- Referenced by:
 --     TABLE "visits" CONSTRAINT "fk_visits_animals" FOREIGN KEY (animal_id) REFERENCES animals(id)
-
