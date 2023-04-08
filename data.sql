@@ -259,10 +259,100 @@ SELECT
 	*
 FROM
 	vets;
+
 --  id |       name       | age | date_of_graduation
 -- ----+------------------+-----+--------------------
 --   1 | William Tatcher  |  45 | 2000-04-23
 --   2 | Maisy Smith      |  26 | 2019-01-17
 --   3 | Stephanie Mendez |  64 | 1981-05-04
 --   4 | Jack Harkness    |  38 | 2008-06-08
+-- (4 rows)
+INSERT INTO
+	specializations(vet_id, species_id)
+VALUES
+	(
+		(
+			SELECT
+				id
+			from
+				vets
+			WHERE
+				name = 'William Tatcher'
+		),
+		(
+			SELECT
+				id
+			From
+				species
+			WHERE
+				name = 'Pokemon'
+		)
+	),
+	(
+		(
+			SELECT
+				id
+			from
+				vets
+			WHERE
+				name = 'Stephanie Mendez'
+		),
+		(
+			SELECT
+				id
+			From
+				species
+			WHERE
+				name = 'Pokemon'
+		)
+	),
+	(
+		(
+			SELECT
+				id
+			from
+				vets
+			WHERE
+				name = 'Stephanie Mendez'
+		),
+		(
+			SELECT
+				id
+			From
+				species
+			WHERE
+				name = 'Digimon'
+		)
+	),
+	(
+		(
+			SELECT
+				id
+			from
+				vets
+			WHERE
+				name = 'Jack Harkness'
+		),
+		(
+			SELECT
+				id
+			From
+				species
+			WHERE
+				name = 'Digimon'
+		)
+	);
+
+-- INSERT 0 4
+SELECT
+	*
+from
+	specializations;
+
+--  vet_id | species_id
+-- --------+------------
+--       1 |          2
+--       3 |          2
+--       3 |          1
+--       4 |          1
 -- (4 rows)

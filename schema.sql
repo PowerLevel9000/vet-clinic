@@ -168,3 +168,45 @@ CREATE TABLE visits (
 );
 
 -- CREATE TABLE
+
+\d ;
+
+--                List of relations
+--  Schema |      Name       |   Type   |  Owner
+-- --------+-----------------+----------+----------
+--  public | animals         | table    | postgres
+--  public | car             | table    | postgres
+--  public | car_id_seq      | sequence | postgres
+--  public | owners          | table    | postgres
+--  public | owners_id_seq   | sequence | postgres
+--  public | persons         | table    | postgres
+--  public | persons_id_seq  | sequence | postgres
+--  public | specializations | table    | postgres
+--  public | species         | table    | postgres
+--  public | species_id_seq  | sequence | postgres
+--  public | vets            | table    | postgres
+--  public | vets_id_seq     | sequence | postgres
+--  public | visits          | table    | postgres
+--  public | visits_id_seq   | sequence | postgres
+-- (14 rows)
+
+\d animals;
+
+--                           Table "public.animals"
+--      Column      |          Type          | Collation | Nullable | Default
+-- -----------------+------------------------+-----------+----------+---------
+--  id              | integer                |           | not null |
+--  name            | character varying(255) |           | not null |
+--  date_of_birth   | date                   |           | not null |
+--  escape_attempts | integer                |           | not null |
+--  neutered        | boolean                |           | not null |
+--  weight_kg       | real                   |           | not null |
+--  species_id      | integer                |           |          |
+--  owner_id        | integer                |           |          |
+-- Indexes:
+--     "animals_pkey" PRIMARY KEY, btree (id)
+-- Foreign-key constraints:
+--     "fk_species_id" FOREIGN KEY (species_id) REFERENCES species(id)
+-- Referenced by:
+--     TABLE "visits" CONSTRAINT "fk_visits_animals" FOREIGN KEY (animal_id) REFERENCES animals(id)
+
