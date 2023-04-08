@@ -133,3 +133,12 @@ FROM
 --   3 | Pikachu    | 2021-01-07    |               1 | f        |     15.04 |            |
 --  10 | Blossom    | 1998-10-13    |               3 | t        |        17 |            |
 -- (10 rows)
+
+--  day 4 creations 
+
+CREATE TABLE vets (
+  id BIGSERIAL NOT NULL PRIMARY KEY,
+  name varchar(100) NOT NULL,
+  age INT NOT NULL,
+  date_of_graduation DATE
+);
