@@ -244,3 +244,25 @@ FROM
 --   1 | Digimon
 --   2 | Pokemon
 -- (2 rows)
+-- day 4 
+-- vets insertions
+INSERT INTO
+	vets (name, age, date_of_graduation)
+VALUES
+	('William Tatcher', 45, '2000-04-23'),
+	('Maisy Smith', 26, '2019-01-17'),
+	('Stephanie Mendez', 64, '1981-05-04'),
+	('Jack Harkness', 38, '2008-06-08');
+
+-- INSERT 0 4
+SELECT
+	*
+FROM
+	vets;
+--  id |       name       | age | date_of_graduation
+-- ----+------------------+-----+--------------------
+--   1 | William Tatcher  |  45 | 2000-04-23
+--   2 | Maisy Smith      |  26 | 2019-01-17
+--   3 | Stephanie Mendez |  64 | 1981-05-04
+--   4 | Jack Harkness    |  38 | 2008-06-08
+-- (4 rows)

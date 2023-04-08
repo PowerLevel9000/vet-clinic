@@ -142,3 +142,4 @@ CREATE TABLE vets (
   age INT NOT NULL,
   date_of_graduation DATE
 );
+-- CREATE TABLE
