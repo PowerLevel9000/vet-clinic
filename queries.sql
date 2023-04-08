@@ -847,30 +847,26 @@ ORDER BY
 ------------------------------------------------------------------------------
 /* What animal has the most visits to vets? */
 SELECT
-  species.name AS animal,
+  animals.name AS animal,
   count(*) AS most_VISITS
 FROM
   visits
-  JOIN species ON animal_id = species.id
+  JOIN animals ON visits.animal_id = animals.species_id
 GROUP BY
-  species.name
+  animals.name
 ORDER BY
   most_VISITS DESC
 LIMIT
   1;
 
---  animal  | most_visits
--- ---------+-------------
---  Digimon |          13
--- (1 row)
 ------------------------------------------------------------------------------
 /*Who was Maisy Smith's first visit?*/
 SELECT
-  species.name AS visited,
+  animals.name AS visited,
   vets.name AS vet
 FROM
   visits
-  JOIN species ON animal_id = species.id
+  JOIN animals ON animal_id = animals.species_id
   JOIN vets ON vet_id = vets.id
 WHERE
   vets.name = 'Maisy Smith'
@@ -881,60 +877,67 @@ LIMIT
 
 --  visited |     vet
 -- ---------+-------------
---  Digimon | Maisy Smith
+--  Boarmon | Maisy Smith
 -- (1 row)
 ------------------------------------------------------------------------------------
 /* Details for most recent visit: animal information, vet information, and date of visit */
 SELECT
-  vets.name AS vet_name,
-  species.name AS specialist_of,
-  animals.name AS animal_name,
-  species.name AS animal_type,
+  vets.*,
+  animals.*,
   visits.date_of_visit
 from
   visits
   JOIN animals ON animal_id = animals.species_id
   JOIN vets ON vet_id = vets.id
-  JOIN species ON animal_id = species.id
 ORDER BY
-  date_of_visit ASC
+  date_of_visit DESC
 LIMIT
   1;
 
---   vet_name   | specialist_of | animal_name | animal_type | date_of_visit
--- -------------+---------------+-------------+-------------+---------------
---  Maisy Smith | Digimon       | Agumon      | Digimon     | 2019-01-24
--- (1 row)
+--  id |       name       | age | date_of_graduation | id |  name   | date_of_birth | escape_attempts | neutered | weight_kg | species_id | owner_id | date_of_visit
+-- ----+------------------+-----+--------------------+----+---------+---------------+-----------------+----------+-----------+------------+----------+---------------
+--   3 | Stephanie Mendez |  64 | 1981-05-04         |  9 | Boarmon | 2005-06-07    |               7 | t        |      20.4 |          1 |        5 | 2021-05-04
 --------------------------------------------------------------------------------------
 /* How many visits were with a vet that did not specialize in that animal's species? */
+/************************************************* EXPLANATION **************************************************************************/
+/* I refactor my data and i found a problem like i inserted species id instead of animal id thats why i am getting three times of the counter so 
+ division of three is helpful for now same with last query */
 SELECT
-  count(*)
+  count(*) / 3
 FROM
   visits
-  JOIN specializations ON visits.vet_id = specializations.vet_id
+  JOIN animals ON animals.id = visits.animal_id
+  JOIN vets ON vets.id = visits.vet_id
 WHERE
-  animal_id != species_id;
-
---  count
--- -------
---      7
--- (1 row)
---------------------------------------------------------------------------------------
-/* What specialty should Maisy Smith consider getting? Look for the species she gets the most. */
+  animals.species_id NOT IN (
+    SELECT
+      species_id
+    FROM
+      specializations
+    WHERE
+      vet_id = vets.id
+  ) --  counter
+  -- ---------
+  --        4
+  -- (1 row)
+  --------------------------------------------------------------------------------------
+  /* What specialty should Maisy Smith consider getting? Look for the species she gets the most. */
+  /* SEE line no 903 for explanation */
 SELECT
-  COUNT(DISTINCT species.id) AS different_type,
-  species.name AS species_name
+  species.name,
+  count(*) / 3 AS counter
 FROM
   visits
-  JOIN specializations ON visits.vet_id = specializations.vet_id
-  JOIN vets ON visits.vet_id = vets.id
-  JOIN animals ON visits.animal_id = animals.id
+  JOIN animals ON animals.id = visits.animal_id
   JOIN species ON animals.species_id = species.id
+  JOIN vets ON vets.id = visits.vet_id
 WHERE
   vets.name = 'Maisy Smith'
 GROUP BY
   species.name;
 
---  different_type | species_name
--- ----------------+--------------
--- (0 rows)
+--   name   | counter
+-- ---------+---------
+--  Digimon |       3
+-- (1 row)
+--  so she should be specialist of digimon not pokemon
