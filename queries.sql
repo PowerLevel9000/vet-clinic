@@ -741,24 +741,24 @@ GROUP BY
 -- day - 4 query
 /* Who was the last animal seen by William Tatcher? */
 SELECT
-  vets.name AS VETS,
-  animals.name AS last_Visit_by
+  vets.name AS VET,
+  animals.name AS last_visited
 FROM
-  animals
-  JOIN visits ON visits.animal_id = animals.species_id
+  visits
   JOIN vets ON visits.vet_id = vets.id
+  JOIN animals ON visits.animal_id = animals.id
 WHERE
   vets.name = 'William Tatcher'
 ORDER BY
   date_of_visit DESC;
 
 SELECT
-  vets.name AS VETS,
-  animals.name AS last_Visit_by
+  vets.name AS VET,
+  animals.name AS last_visited
 FROM
-  animals
-  JOIN visits ON visits.animal_id = animals.species_id
+  visits
   JOIN vets ON visits.vet_id = vets.id
+  JOIN animals ON visits.animal_id = animals.id
 WHERE
   vets.name = 'William Tatcher'
 ORDER BY
@@ -766,55 +766,46 @@ ORDER BY
 LIMIT
   1;
 
---          vets       | last_visit_by
--- ------------------+---------------
+--        vet       | last_visited
+-- -----------------+--------------
 --  William Tatcher | Blossom
+-- (1 row)
 /*How many different animals did Stephanie Mendez see?*/
 SELECT
-  vets.name AS VETS,
-  species.name AS last_Visit_by
+  vets.name AS VET,
+  count(DISTINCT animals.species_id) AS NUMBER_OF_different_animals
 FROM
-  species
-  JOIN visits ON visits.animal_id = species.id
-  JOIN vets ON visits.vet_id = vets.id
-WHERE
-  vets.name = 'Stephanie Mendez'
-ORDER BY
-  date_of_visit DESC;
-
-SELECT
-  vets.name AS VETS,
-  count(DISTINCT species.name) AS different_animals
-FROM
-  species
-  JOIN visits ON visits.animal_id = species.id
+  visits
+  JOIN animals ON visits.animal_id = animals.id
   JOIN vets ON visits.vet_id = vets.id
 WHERE
   vets.name = 'Stephanie Mendez'
 GROUP BY
   vets.name;
 
---        vets       | different_animals
--- ------------------+-------------------
---  Stephanie Mendez |                 2
+--        vet        | number_of_different_animals
+-- ------------------+-----------------------------
+--  Stephanie Mendez |                           2
+-- (1 row)
 /*List all vets and their specialties, including vets with no specialties.*/
 SELECT
   vets.name AS vet,
-  species.name AS specializations
+  COALESCE(species.name, 'No specialty') AS specializations
 FROM
   vets
-  JOIN specializations ON vet_id = vets.id
-  JOIN species ON species_id = species.id
+  LEFT JOIN specializations ON vet_id = vets.id
+  LEFT JOIN species ON species_id = species.id
 ORDER BY
   vets.name;
 
---         vet       |  specializations
--- ------------------+---------
+--        vet        | specializations
+-- ------------------+-----------------
 --  Jack Harkness    | Digimon
+--  Maisy Smith      | No specialty
 --  Stephanie Mendez | Pokemon
 --  Stephanie Mendez | Digimon
 --  William Tatcher  | Pokemon
--- (4 rows)
+-- (5 rows)
 ----------------------------------------------------------------------------------------
 /* List all animals that visited Stephanie Mendez between April 1st and August 30th, 2020. */
 SELECT
@@ -822,7 +813,7 @@ SELECT
   animals.name AS visitor
 FROM
   visits
-  JOIN animals ON animal_id = animals.species_id
+  JOIN animals ON animal_id = animals.id
   JOIN vets ON vet_id = vets.id
 WHERE
   vets.name = 'Stephanie Mendez'
@@ -831,19 +822,11 @@ WHERE
 ORDER BY
   date_of_visit DESC;
 
---  visited_date |  visitor
--- --------------+------------
---  2020-07-22   | Boarmon
---  2020-07-22   | Angemon
---  2020-07-22   | Devimon
---  2020-07-22   | Plantmon
---  2020-07-22   | Gabumon
+--  visited_date | visitor
+-- --------------+---------
 --  2020-07-22   | Agumon
 --  2020-05-24   | Blossom
---  2020-05-24   | Squirtle
---  2020-05-24   | Charmander
---  2020-05-24   | Pikachu
--- (10 rows)
+-- (2 rows)
 ------------------------------------------------------------------------------
 /* What animal has the most visits to vets? */
 SELECT
@@ -851,7 +834,7 @@ SELECT
   count(*) AS most_VISITS
 FROM
   visits
-  JOIN animals ON visits.animal_id = animals.species_id
+  JOIN animals ON visits.animal_id = animals.id
 GROUP BY
   animals.name
 ORDER BY
@@ -859,6 +842,10 @@ ORDER BY
 LIMIT
   1;
 
+--  animal  | most_visits
+-- ---------+-------------
+--  Boarmon |           4
+-- (1 row)
 ------------------------------------------------------------------------------
 /*Who was Maisy Smith's first visit?*/
 SELECT
@@ -887,7 +874,7 @@ SELECT
   visits.date_of_visit
 from
   visits
-  JOIN animals ON animal_id = animals.species_id
+  JOIN animals ON animal_id = animals.id
   JOIN vets ON vet_id = vets.id
 ORDER BY
   date_of_visit DESC
@@ -896,18 +883,16 @@ LIMIT
 
 --  id |       name       | age | date_of_graduation | id |  name   | date_of_birth | escape_attempts | neutered | weight_kg | species_id | owner_id | date_of_visit
 -- ----+------------------+-----+--------------------+----+---------+---------------+-----------------+----------+-----------+------------+----------+---------------
---   3 | Stephanie Mendez |  64 | 1981-05-04         |  9 | Boarmon | 2005-06-07    |               7 | t        |      20.4 |          1 |        5 | 2021-05-04
---------------------------------------------------------------------------------------
+--   3 | Stephanie Mendez |  64 | 1981-05-04         |  4 | Devimon | 2017-05-12    |               5 | t        |        11 |          1 |        3 | 2021-05-04
+-- (1 row)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
 /* How many visits were with a vet that did not specialize in that animal's species? */
-/************************************************* EXPLANATION **************************************************************************/
-/* I refactor my data and i found a problem like i inserted species id instead of animal id thats why i am getting three times of the counter so 
- division of three is helpful for now same with last query */
 SELECT
-  count(*) / 3
+  count(*) / 3 AS counter
 FROM
   visits
-  JOIN animals ON animals.id = visits.animal_id
-  JOIN vets ON vets.id = visits.vet_id
+  LEFT JOIN animals ON animals.id = visits.animal_id
+  LEFT JOIN vets ON vets.id = visits.vet_id
 WHERE
   animals.species_id NOT IN (
     SELECT
@@ -916,13 +901,15 @@ WHERE
       specializations
     WHERE
       vet_id = vets.id
-  ) --  counter
-  -- ---------
-  --        4
-  -- (1 row)
-  --------------------------------------------------------------------------------------
-  /* What specialty should Maisy Smith consider getting? Look for the species she gets the most. */
-  /* SEE line no 903 for explanation */
+  );
+
+--  counter
+-- ---------
+--        4
+-- (1 row)
+--------------------------------------------------------------------------------------
+/* What specialty should Maisy Smith consider getting? Look for the species she gets the most. */
+/* SEE line no 903 for explanation */
 SELECT
   species.name,
   count(*) / 3 AS counter
