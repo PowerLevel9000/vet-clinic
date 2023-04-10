@@ -594,7 +594,7 @@ VALUES
 			from
 				animals
 			WHERE
-				name = 'Agumon'
+				name = 'Angemon'
 		),
 		(
 			SELECT
@@ -613,7 +613,7 @@ VALUES
 			from
 				animals
 			WHERE
-				name = 'Agumon'
+				name = 'Angemon'
 		),
 		(
 			SELECT
