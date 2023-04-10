@@ -362,7 +362,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -381,7 +381,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -400,7 +400,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -419,7 +419,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -438,7 +438,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -457,7 +457,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -476,7 +476,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -495,7 +495,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -514,7 +514,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -533,7 +533,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -552,7 +552,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -571,7 +571,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -590,7 +590,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -609,7 +609,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -628,7 +628,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -647,7 +647,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -666,7 +666,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -685,7 +685,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -704,7 +704,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
@@ -723,7 +723,7 @@ VALUES
 	(
 		(
 			SELECT
-				species_id
+				id
 			from
 				animals
 			WHERE
