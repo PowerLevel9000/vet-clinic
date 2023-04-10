@@ -741,24 +741,24 @@ GROUP BY
 -- day - 4 query
 /* Who was the last animal seen by William Tatcher? */
 SELECT
-  vets.name AS VETS,
-  animals.name AS last_Visit_by
+  vets.name AS VET,
+  animals.name AS last_visited
 FROM
-  animals
-  JOIN visits ON visits.animal_id = animals.species_id
+  visits
   JOIN vets ON visits.vet_id = vets.id
+  JOIN animals ON visits.animal_id = animals.id
 WHERE
   vets.name = 'William Tatcher'
 ORDER BY
   date_of_visit DESC;
 
 SELECT
-  vets.name AS VETS,
-  animals.name AS last_Visit_by
+  vets.name AS VET,
+  animals.name AS last_visited
 FROM
-  animals
-  JOIN visits ON visits.animal_id = animals.species_id
+  visits
   JOIN vets ON visits.vet_id = vets.id
+  JOIN animals ON visits.animal_id = animals.id
 WHERE
   vets.name = 'William Tatcher'
 ORDER BY
@@ -766,57 +766,51 @@ ORDER BY
 LIMIT
   1;
 
---          vets       | last_visit_by
--- ------------------+---------------
+--        vet       | last_visited
+-- -----------------+--------------
 --  William Tatcher | Blossom
+-- (1 row)
 /*How many different animals did Stephanie Mendez see?*/
 SELECT
-  vets.name AS VETS,
-  species.name AS last_Visit_by
+  vets.name AS VET,
+  count(DISTINCT animals.species_id) AS NUMBER_OF_different_animals
 FROM
-  species
-  JOIN visits ON visits.animal_id = species.id
-  JOIN vets ON visits.vet_id = vets.id
-WHERE
-  vets.name = 'Stephanie Mendez'
-ORDER BY
-  date_of_visit DESC;
-
-SELECT
-  vets.name AS VETS,
-  count(DISTINCT species.name) AS different_animals
-FROM
-  species
-  JOIN visits ON visits.animal_id = species.id
+  visits
+  JOIN animals ON visits.animal_id = animals.id
   JOIN vets ON visits.vet_id = vets.id
 WHERE
   vets.name = 'Stephanie Mendez'
 GROUP BY
   vets.name;
 
---        vets       | different_animals
--- ------------------+-------------------
---  Stephanie Mendez |                 2
+--        vet        | number_of_different_animals
+-- ------------------+-----------------------------
+--  Stephanie Mendez |                           2
+-- (1 row)
 /*List all vets and their specialties, including vets with no specialties.*/
+
 SELECT
   vets.name AS vet,
-  species.name AS specializations
+  COALESCE(species.name, 'No specialty') AS specializations
 FROM
   vets
-  JOIN specializations ON vet_id = vets.id
-  JOIN species ON species_id = species.id
+  LEFT JOIN specializations ON vet_id = vets.id
+  LEFT JOIN species ON species_id = species.id
 ORDER BY
   vets.name;
 
---         vet       |  specializations
--- ------------------+---------
+--        vet        | specializations
+-- ------------------+-----------------
 --  Jack Harkness    | Digimon
+--  Maisy Smith      | No specialty
 --  Stephanie Mendez | Pokemon
 --  Stephanie Mendez | Digimon
 --  William Tatcher  | Pokemon
--- (4 rows)
+-- (5 rows)
+
 ----------------------------------------------------------------------------------------
 /* List all animals that visited Stephanie Mendez between April 1st and August 30th, 2020. */
+
 SELECT
   visits.date_of_visit AS visited_date,
   animals.name AS visitor
