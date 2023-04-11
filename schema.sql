@@ -271,3 +271,5 @@ ADD
 -- CREATE INDEX
   CREATE INDEX index_vet_id ON visits (vet_id);
   -- CREATE INDEX
+  CREATE INDEX index_email ON owners (email);
+  -- CREATE INDEX
