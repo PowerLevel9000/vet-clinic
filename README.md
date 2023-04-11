@@ -121,12 +121,17 @@ Loading ...
 ## 👥 Authors <a name="authors"></a>
 
 
-👤 **Author1**
+👤 **Adarsh Pathak**
 
 - GitHub: [@PowerLevel9000](https://github.com/PowerLevel9000/)
 - Twitter: [@PowerLevel9002](https://twitter.com/PowerLevel9002/)
 - LinkedIn: [@Adarsh Pathak](https://linkedin.com/in/powerlevel/)
 
+👤 **Rita Nkem Daniel**
+
+- GitHub: [@RitaDee](https://github.com/RitaDee)
+- Twitter: [@Pdurdana_dee](https://twitter.com/durdana_dee)
+- LinkedIn: [@Rita N. Daniel](https://www.linkedin.com/in/rita-daniel/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -135,7 +140,7 @@ Loading ...
 ## 🔭 Future Features <a name="future-features"></a>
 
 manipulation of the data
-TRANCSECTIONS
+TRANS-SECTIONS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

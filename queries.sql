@@ -945,3 +945,116 @@ GROUP BY
 --  Digimon |       3
 -- (1 row)
 --  so she should be specialist of digimon not pokemon
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+--*************************************************************** week-2 DAY 1 table execution time ****************************************************************************************************************************************
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+EXPLAIN ANALYZE
+SELECT
+  COUNT(*)
+FROM
+  visits
+where
+  animal_id = 4;
+
+--                                                                  QUERY PLAN
+-- --------------------------------------------------------------------------------------------------------------------------------------------
+--  Finalize Aggregate  (cost=155083.01..155083.02 rows=1 width=8) (actual time=1000.516..1008.718 rows=1 loops=1)
+--    ->  Gather  (cost=155082.79..155083.00 rows=2 width=8) (actual time=1000.072..1008.706 rows=3 loops=1)
+--          Workers Planned: 2
+--          Workers Launched: 2
+--          ->  Partial Aggregate  (cost=154082.79..154082.80 rows=1 width=8) (actual time=947.379..947.380 rows=1 loops=3)
+--                ->  Parallel Seq Scan on visits  (cost=0.00..152596.64 rows=594460 width=0) (actual time=0.570..907.763 rows=479238 loops=3)
+--                      Filter: (animal_id = 4)
+--                      Rows Removed by Filter: 4313142
+--  Planning Time: 0.168 ms
+--  Execution Time: 1008.770 ms
+-- (10 rows)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+/* execution time improvement */
+EXPLAIN ANALYZE
+SELECT
+  COUNT(*)
+FROM
+  visits
+where
+  animal_id = 4;
+
+--                                                                               QUERY PLAN                                                          
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--  Finalize Aggregate  (cost=23963.53..23963.54 rows=1 width=8) (actual time=156.154..165.967 rows=1 loops=1)
+--    ->  Gather  (cost=23963.31..23963.52 rows=2 width=8) (actual time=155.629..165.954 rows=3 loops=1)
+--          Workers Planned: 2
+--          Workers Launched: 2
+--          ->  Partial Aggregate  (cost=22963.31..22963.32 rows=1 width=8) (actual time=102.054..102.055 rows=1 loops=3)
+--                ->  Parallel Index Only Scan using indx_animal_id on visits  (cost=0.43..21477.18 rows=594455 width=0) (actual time=1.404..68.716 rows=479238 loops=3)
+--                      Index Cond: (animal_id = 4)
+--                      Heap Fetches: 0
+--  Planning Time: 9.235 ms
+--  Execution Time: 166.524 ms
+-- (10 rows)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+explain analyze
+SELECT
+  *
+FROM
+  visits
+where
+  vet_id = 2;
+
+-- "QUERY PLAN"
+-- "Seq Scan on visits  (cost=0.00..283172.38 rows=3919989 width=16) (actual time=0.295..972.132 rows=3953717 loops=1)"
+-- "  Filter: (vet_id = 2)"
+-- "  Rows Removed by Filter: 11861135"
+-- "Planning Time: 1.855 ms"
+-- "Execution Time: 1057.179 ms"
+/* execution time improvement */
+explain analyze
+SELECT
+  *
+FROM
+  visits
+where
+  vet_id = 2;
+
+-- "QUERY PLAN"
+-- "Bitmap Heap Scan on visits  (cost=43648.24..269826.44 rows=3919975 width=16) (actual time=106.258..705.628 rows=3953717 loops=1)"
+-- "  Recheck Cond: (vet_id = 2)"
+-- "  Rows Removed by Index Recheck: 4582810"
+-- "  Heap Blocks: exact=52461 lossy=33025"
+-- "  ->  Bitmap Index Scan on index_vet_id  (cost=0.00..42668.25 rows=3919975 width=0) (actual time=100.382..100.383 rows=3953717 loops=1)"
+-- "        Index Cond: (vet_id = 2)"
+-- "Planning Time: 0.539 ms"
+-- "Execution Time: 786.825 ms"
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+explain analyze
+SELECT
+  *
+FROM
+  owners
+where
+  email = 'owner_18327@mail.com';
+
+-- "QUERY PLAN"
+-- "Gather  (cost=1000.00..142509.38 rows=5 width=43) (actual time=19.828..1565.025 rows=4 loops=1)"
+-- "  Workers Planned: 2"
+-- "  Workers Launched: 2"
+-- "  ->  Parallel Seq Scan on owners  (cost=0.00..141508.88 rows=2 width=43) (actual time=674.864..1526.357 rows=1 loops=3)"
+-- "        Filter: ((email)::text = 'owner_18327@mail.com'::text)"
+-- "        Rows Removed by Filter: 3333334"
+-- "Planning Time: 4.897 ms"
+-- "Execution Time: 1566.058 ms"
+/* execution time improvement */
+explain analyze
+SELECT
+  *
+FROM
+  owners
+where
+  email = 'owner_18327@mail.com';
+
+-- "QUERY PLAN"
+-- "Index Scan using index_email on owners  (cost=0.43..24.46 rows=5 width=43) (actual time=0.612..1.138 rows=4 loops=1)"
+-- "  Index Cond: ((email)::text = 'owner_18327@mail.com'::text)"
+-- "Planning Time: 3.240 ms"
+-- "Execution Time: 1.855 ms"
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
