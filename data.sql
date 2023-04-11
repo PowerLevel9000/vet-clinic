@@ -825,21 +825,80 @@ FROM
 	visits
 LIMIT
 	5;
+INSERT INTO
+	visits (animal_id, vet_id, date_of_visit)
+SELECT
+	*
+FROM
+	(
+		SELECT
+			id
+		FROM
+			animals
+	) animal_ids,
+	(
+		SELECT
+			id
+		FROM
+			vets
+	) vets_ids,
+	generate_series(
+		'1980-01-01' :: timestamp,
+		'2021-01-01',
+		'4 hours'
+	) visit_timestamp;
+
+INSERT INTO
+	visits (animal_id, vet_id, date_of_visit)
+SELECT
+	*
+FROM
+	(
+		SELECT
+			id
+		FROM
+			animals
+	) animal_ids,
+	(
+		SELECT
+			id
+		FROM
+			vets
+	) vets_ids,
+	generate_series('1980-01-01' :: timestamp, '2021-01-01', '4 hours') visit_timestamp;
+
+SELECT
+	*
+FROM
+	visits
+LIMIT
+	10;
 
 --  animal_id | vet_id | date_of_visit
 -- -----------+--------+---------------
---          1 |      1 | 2020-05-24
---          1 |      3 | 2020-07-22
---          2 |      4 | 2021-02-02
---          3 |      2 | 2020-01-05
---          3 |      2 | 2020-03-08
---          3 |      2 | 2020-05-14
---          4 |      3 | 2021-05-04
---          5 |      4 | 2021-02-24
---          6 |      2 | 2019-12-21
---          6 |      1 | 2020-08-10
+--          1 |      1 | 1980-01-01
+--          2 |      1 | 1980-01-01
+--          3 |      1 | 1980-01-01
+--          6 |      1 | 1980-01-01
+--          4 |      1 | 1980-01-01
+--          8 |      1 | 1980-01-01
+--          9 |      1 | 1980-01-01
+--          5 |      1 | 1980-01-01
+--          7 |      1 | 1980-01-01
+--         10 |      1 | 1980-01-01
 -- (10 rows)
 ------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+insert into
+	owners (full_name, email)
+select
+	'Owner ' || generate_series(1, 2500000),
+	'owner_' || generate_series(1, 2500000) || '@mail.com';
+insert into
+	owners (full_name, email)
+select
+	'Owner ' || generate_series(1, 2500000),
+	'owner_' || generate_series(1, 2500000) || '@mail.com';
+
 insert into
 	owners (full_name, email)
 select
@@ -856,7 +915,7 @@ SELECT
 FROM
 	owners
 LIMIT
-	5;
+	10;
 
 --  id |    full_name    | age |      email
 -- ----+-----------------+-----+------------------
