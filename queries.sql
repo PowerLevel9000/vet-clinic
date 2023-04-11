@@ -945,5 +945,54 @@ GROUP BY
 --  Digimon |       3
 -- (1 row)
 --  so she should be specialist of digimon not pokemon
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+--*************************************************************** week-2 DAY 1 table execution time ****************************************************************************************************************************************
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+EXPLAIN ANALYZE
+SELECT
+  COUNT(*)
+FROM
+  visits
+where
+  animal_id = 4;
 
-explain analyze SELECT COUNT(*) FROM visits where animal_id = 4;
+--                                                                  QUERY PLAN
+-- --------------------------------------------------------------------------------------------------------------------------------------------
+--  Finalize Aggregate  (cost=155083.01..155083.02 rows=1 width=8) (actual time=1000.516..1008.718 rows=1 loops=1)
+--    ->  Gather  (cost=155082.79..155083.00 rows=2 width=8) (actual time=1000.072..1008.706 rows=3 loops=1)
+--          Workers Planned: 2
+--          Workers Launched: 2
+--          ->  Partial Aggregate  (cost=154082.79..154082.80 rows=1 width=8) (actual time=947.379..947.380 rows=1 loops=3)
+--                ->  Parallel Seq Scan on visits  (cost=0.00..152596.64 rows=594460 width=0) (actual time=0.570..907.763 rows=479238 loops=3)
+--                      Filter: (animal_id = 4)
+--                      Rows Removed by Filter: 4313142
+--  Planning Time: 0.168 ms
+--  Execution Time: 1008.770 ms
+-- (10 rows)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+/* execution time improvement */
+CREATE INDEX indx_animal_id on visits (animal_id);
+
+-- CREATE INDEX
+EXPLAIN ANALYZE
+SELECT
+  COUNT(*)
+FROM
+  visits
+where
+  animal_id = 4;
+
+--                                                                               QUERY PLAN                                                          
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--  Finalize Aggregate  (cost=23963.53..23963.54 rows=1 width=8) (actual time=156.154..165.967 rows=1 loops=1)
+--    ->  Gather  (cost=23963.31..23963.52 rows=2 width=8) (actual time=155.629..165.954 rows=3 loops=1)
+--          Workers Planned: 2
+--          Workers Launched: 2
+--          ->  Partial Aggregate  (cost=22963.31..22963.32 rows=1 width=8) (actual time=102.054..102.055 rows=1 loops=3)
+--                ->  Parallel Index Only Scan using indx_animal_id on visits  (cost=0.43..21477.18 rows=594455 width=0) (actual time=1.404..68.716 rows=479238 loops=3)
+--                      Index Cond: (animal_id = 4)
+--                      Heap Fetches: 0
+--  Planning Time: 9.235 ms
+--  Execution Time: 166.524 ms
+-- (10 rows)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
