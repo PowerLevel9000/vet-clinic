@@ -945,3 +945,5 @@ GROUP BY
 --  Digimon |       3
 -- (1 row)
 --  so she should be specialist of digimon not pokemon
+
+explain analyze SELECT COUNT(*) FROM visits where animal_id = 4;
