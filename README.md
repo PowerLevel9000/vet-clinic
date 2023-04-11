@@ -1,3 +1,7 @@
+<div align="center">
+  <img src = "./schema_based_on_diagram.png" width="100%">
+</div>
+
 ## Getting Started
 
 This repository includes files with plain SQL that can be used to recreate a database:
