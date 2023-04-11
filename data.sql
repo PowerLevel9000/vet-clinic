@@ -774,3 +774,100 @@ FROM
 --  19 |         2 |      3 | 2020-05-24
 --  20 |         2 |      1 | 2021-01-11
 -- (20 rows)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+--*************************************************************** week-2 DAY 1 insertion ****************************************************************************************************************************************
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+INSERT INTO
+	visits (animal_id, vet_id, date_of_visit)
+SELECT
+	*
+FROM
+	(
+		SELECT
+			id
+		FROM
+			animals
+	) animal_ids,
+	(
+		SELECT
+			id
+		FROM
+			vets
+	) vets_ids,
+	generate_series(
+		'1980-01-01' :: timestamp,
+		'2021-01-01',
+		'4 hours'
+	) visit_timestamp;
+
+INSERT INTO
+	visits (animal_id, vet_id, date_of_visit)
+SELECT
+	*
+FROM
+	(
+		SELECT
+			id
+		FROM
+			animals
+	) animal_ids,
+	(
+		SELECT
+			id
+		FROM
+			vets
+	) vets_ids,
+	generate_series('1980-01-01' :: timestamp, '2021-01-01', '4 hours') visit_timestamp;
+
+SELECT
+	*
+FROM
+	visits
+LIMIT
+	5;
+
+--  animal_id | vet_id | date_of_visit
+-- -----------+--------+---------------
+--          1 |      1 | 2020-05-24
+--          1 |      3 | 2020-07-22
+--          2 |      4 | 2021-02-02
+--          3 |      2 | 2020-01-05
+--          3 |      2 | 2020-03-08
+--          3 |      2 | 2020-05-14
+--          4 |      3 | 2021-05-04
+--          5 |      4 | 2021-02-24
+--          6 |      2 | 2019-12-21
+--          6 |      1 | 2020-08-10
+-- (10 rows)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+insert into
+	owners (full_name, email)
+select
+	'Owner ' || generate_series(1, 2500000),
+	'owner_' || generate_series(1, 2500000) || '@mail.com';
+insert into
+	owners (full_name, email)
+select
+	'Owner ' || generate_series(1, 2500000),
+	'owner_' || generate_series(1, 2500000) || '@mail.com';
+
+SELECT
+	*
+FROM
+	owners
+LIMIT
+	5;
+
+--  id |    full_name    | age |      email
+-- ----+-----------------+-----+------------------
+--   1 | Sam Smith       |  34 |
+--   4 | Melody Pond     |  77 |
+--   5 | Dean Winchester |  14 |
+--   6 | Jodie Whittaker |  38 |
+--   3 | Bob             |  45 |
+--   2 | Jennifer Orwell |  19 |
+--   8 | Owner 1         |     | owner_1@mail.com
+--   9 | Owner 2         |     | owner_2@mail.com
+--  10 | Owner 3         |     | owner_3@mail.com
+--  11 | Owner 4         |     | owner_4@mail.com
+-- (10 rows)
