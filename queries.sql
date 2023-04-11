@@ -1002,7 +1002,7 @@ explain analyze SELECT * FROM visits where vet_id = 2;
 -- "Execution Time: 1057.179 ms"
 
 /* execution time improvement */
-
+explain analyze SELECT * FROM visits where vet_id = 2;
 -- "QUERY PLAN"
 -- "Bitmap Heap Scan on visits  (cost=43648.24..269826.44 rows=3919975 width=16) (actual time=106.258..705.628 rows=3953717 loops=1)"
 -- "  Recheck Cond: (vet_id = 2)"
@@ -1012,6 +1012,26 @@ explain analyze SELECT * FROM visits where vet_id = 2;
 -- "        Index Cond: (vet_id = 2)"
 -- "Planning Time: 0.539 ms"
 -- "Execution Time: 786.825 ms"
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+explain analyze SELECT * FROM owners where email = 'owner_18327@mail.com';
 
+-- "QUERY PLAN"
+-- "Gather  (cost=1000.00..142509.38 rows=5 width=43) (actual time=19.828..1565.025 rows=4 loops=1)"
+-- "  Workers Planned: 2"
+-- "  Workers Launched: 2"
+-- "  ->  Parallel Seq Scan on owners  (cost=0.00..141508.88 rows=2 width=43) (actual time=674.864..1526.357 rows=1 loops=3)"
+-- "        Filter: ((email)::text = 'owner_18327@mail.com'::text)"
+-- "        Rows Removed by Filter: 3333334"
+-- "Planning Time: 4.897 ms"
+-- "Execution Time: 1566.058 ms"
+
+/* execution time improvement */
+explain analyze SELECT * FROM owners where email = 'owner_18327@mail.com';
+
+-- "QUERY PLAN"
+-- "Index Scan using index_email on owners  (cost=0.43..24.46 rows=5 width=43) (actual time=0.612..1.138 rows=4 loops=1)"
+-- "  Index Cond: ((email)::text = 'owner_18327@mail.com'::text)"
+-- "Planning Time: 3.240 ms"
+-- "Execution Time: 1.855 ms"
 
 ------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
