@@ -971,9 +971,6 @@ where
 -- (10 rows)
 ------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
 /* execution time improvement */
-CREATE INDEX indx_animal_id on visits (animal_id);
-
--- CREATE INDEX
 EXPLAIN ANALYZE
 SELECT
   COUNT(*)
@@ -1003,6 +1000,18 @@ explain analyze SELECT * FROM visits where vet_id = 2;
 -- "  Rows Removed by Filter: 11861135"
 -- "Planning Time: 1.855 ms"
 -- "Execution Time: 1057.179 ms"
+
+/* execution time improvement */
+
+-- "QUERY PLAN"
+-- "Bitmap Heap Scan on visits  (cost=43648.24..269826.44 rows=3919975 width=16) (actual time=106.258..705.628 rows=3953717 loops=1)"
+-- "  Recheck Cond: (vet_id = 2)"
+-- "  Rows Removed by Index Recheck: 4582810"
+-- "  Heap Blocks: exact=52461 lossy=33025"
+-- "  ->  Bitmap Index Scan on index_vet_id  (cost=0.00..42668.25 rows=3919975 width=0) (actual time=100.382..100.383 rows=3953717 loops=1)"
+-- "        Index Cond: (vet_id = 2)"
+-- "Planning Time: 0.539 ms"
+-- "Execution Time: 786.825 ms"
 
 
 ------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
