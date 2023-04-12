@@ -86,15 +86,48 @@ CREATE TABLE invoices (
     generated_at timestamp NOT NULL,
     payed_at timestamp NOT NULL,
     medical_histories_id INT NOT NULL
-)
-
+);
+-- CREATE TABLE
 CREATE INDEX ON invoices (medical_histories_id);
-
+-- CREATE INDEX
 CREATE TABLE invoice_items (
     id INT NOT NULL PRIMARY KEY,
     unit_price decimal NOT NULL,
     quantity INT NOT NULL,
     total_price decimal NOT NULL,
     invoice_id INT NOT NULL,
-    treatment_id INT NOT NULL, FOREIGN KEY (invoice_id) REFERENCES invoices(id), CONSTRAINT "treatment_id_foreign" FOREIGN KEY (treatment_id) REFERENCES treatment(id)
-)
+    treatment_id INT NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id),
+    CONSTRAINT "treatment_id_foreign" FOREIGN KEY (treatment_id) REFERENCES treatment(id)
+);
+-- CREATE TABLE
+
+\d invoices;
+--                                Table "public.invoices"
+--         Column        |            Type             | Collation | Nullable | Default
+-- ----------------------+-----------------------------+-----------+----------+---------
+--  id                   | integer                     |           | not null |
+--  total_amount         | numeric                     |           | not null |
+--  generated_at         | timestamp without time zone |           | not null |
+--  payed_at             | timestamp without time zone |           | not null |
+--  medical_histories_id | integer                     |           | not null |
+-- Indexes:
+--     "invoices_pkey" PRIMARY KEY, btree (id)
+--     "invoices_medical_histories_id_idx" btree (medical_histories_id)
+-- Referenced by:
+--     TABLE "invoice_items" CONSTRAINT "invoice_items_invoice_id_fkey" FOREIGN KEY (invoice_id) REFERENCES invoices(id)
+\d invoice_items;
+--               Table "public.invoice_items"
+--     Column    |  Type   | Collation | Nullable | Default
+-- --------------+---------+-----------+----------+---------
+--  id           | integer |           | not null |
+--  unit_price   | numeric |           | not null |
+--  quantity     | integer |           | not null |
+--  total_price  | numeric |           | not null |
+--  invoice_id   | integer |           | not null |
+--  treatment_id | integer |           | not null |
+-- Indexes:
+--     "invoice_items_pkey" PRIMARY KEY, btree (id)
+-- Foreign-key constraints:
+--     "invoice_items_invoice_id_fkey" FOREIGN KEY (invoice_id) REFERENCES invoices(id)
+--     "treatment_id_foreign" FOREIGN KEY (treatment_id) REFERENCES treatment(id)
