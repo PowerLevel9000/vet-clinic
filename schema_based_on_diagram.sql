@@ -1,63 +1,82 @@
-CREATE TABLE "visits"(
-    "animal_id" INTEGER NOT NULL,
-    "vet_id" INTEGER NOT NULL,
-    "date_of_visit" DATE NOT NULL
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+--**************************************************************** week-2 DAY 2 table creation Based on diagram ****************************************************************************************************************************************
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+CREATE TABLE patients (
+    id INT NOT NULL PRIMARY KEY,
+    name VARCHAR(100),
+    date_of_birth DATE NOT NULL
 );
-CREATE TABLE "owners"(
-    "id" BIGINT NOT NULL,
-    "full_name" VARCHAR(50) NOT NULL,
-    "age" INTEGER NOT NULL,
-    "email" VARCHAR(120) NOT NULL
+
+CREATE TABLE medical_history (
+    id INT NOT NULL PRIMARY KEY,
+    admitted_at TIMESTAMP NOT NULL,
+    patient_id INT NOT NULL,
+    status VARCHAR(100),
+    CONSTRAINT "patient_id_foreign" FOREIGN KEY (patient_id) REFERENCES patients(id)
 );
-CREATE INDEX "owners_email_index" ON
-    "owners"("email");
-ALTER TABLE
-    "owners" ADD PRIMARY KEY("id");
-CREATE TABLE "animals"(
-    "id" INTEGER NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "date_of_birth" DATE NOT NULL,
-    "escape_attempts" INTEGER NOT NULL,
-    "neutered" BOOLEAN NOT NULL,
-    "weight_kg" DECIMAL(8, 2) NOT NULL,
-    "species_id" INTEGER NOT NULL,
-    "owner_id" INTEGER NULL
+
+CREATE INDEX ON medical_histories (patient_id);
+
+CREATE TABLE treatment (
+    id INT NOT NULL PRIMARY KEY,
+    type VARCHAR(100),
+    name VARCHAR(100),
+    CONSTRAINT "medical_history_id_foreign" FOREIGN KEY (id) REFERENCES medical_history(id)
 );
+
 ALTER TABLE
-    "animals" ADD PRIMARY KEY("id");
-CREATE TABLE "species"(
-    "id" BIGINT NOT NULL,
-    "name" VARCHAR(255) NOT NULL
+    medical_history
+ADD
+    CONSTRAINT "many_many_id" FOREIGN KEY (id) REFERENCES treatment(id);
+
+CREATE TABLE medical_history_treatment (
+    medical_history_id INT NOT NULL,
+    treatment_id INT NOT NULL,
+    PRIMARY KEY (medical_history_id, treatment_id),
+    FOREIGN KEY (medical_history_id) REFERENCES medical_history(id),
+    FOREIGN KEY (treatment_id) REFERENCES treatment(id)
 );
-ALTER TABLE
-    "species" ADD PRIMARY KEY("id");
-CREATE TABLE "specializations"(
-    "vet_id" INTEGER NOT NULL,
-    "species_id" INTEGER NOT NULL
-);
-CREATE INDEX "specializations_vet_id_species_id_index" ON
-    "specializations"("vet_id", "species_id");
-ALTER TABLE
-    "specializations" ADD PRIMARY KEY("vet_id");
-ALTER TABLE
-    "specializations" ADD PRIMARY KEY("species_id");
-CREATE TABLE "vets"(
-    "id" BIGINT NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
-    "age" INTEGER NOT NULL,
-    "date_of_graduation" DATE NOT NULL
-);
-ALTER TABLE
-    "vets" ADD PRIMARY KEY("id");
-ALTER TABLE
-    "species" ADD CONSTRAINT "species_id_foreign" FOREIGN KEY("id") REFERENCES "specializations"("species_id");
-ALTER TABLE
-    "vets" ADD CONSTRAINT "vets_id_foreign" FOREIGN KEY("id") REFERENCES "specializations"("vet_id");
-ALTER TABLE
-    "visits" ADD CONSTRAINT "visits_animal_id_foreign" FOREIGN KEY("animal_id") REFERENCES "animals"("id");
-ALTER TABLE
-    "animals" ADD CONSTRAINT "animals_owner_id_foreign" FOREIGN KEY("owner_id") REFERENCES "owners"("id");
-ALTER TABLE
-    "animals" ADD CONSTRAINT "animals_species_id_foreign" FOREIGN KEY("species_id") REFERENCES "species"("id");
-ALTER TABLE
-    "visits" ADD CONSTRAINT "visits_vet_id_foreign" FOREIGN KEY("vet_id") REFERENCES "vets"("id");
+
+\ d patients;
+
+--                          Table "public.patients"
+--     Column     |          Type          | Collation | Nullable | Default
+-- ---------------+------------------------+-----------+----------+---------
+--  id            | integer                |           | not null |
+--  name          | character varying(100) |           |          |
+--  date_of_birth | date                   |           | not null |
+-- Indexes:
+--     "patients_pkey" PRIMARY KEY, btree (id)
+-- Referenced by:
+--     TABLE "medical_history" CONSTRAINT "patient_id_foreign" FOREIGN KEY (patient_id) REFERENCES patients(id)
+\ d medical_history;
+
+--                        Table "public.medical_history"
+--    Column    |            Type             | Collation | Nullable | Default
+-- -------------+-----------------------------+-----------+----------+---------
+--  id          | integer                     |           | not null |
+--  admitted_at | timestamp without time zone |           | not null |
+--  patient_id  | integer                     |           | not null |
+--  status      | character varying(100)      |           |          |
+-- Indexes:
+--     "medical_history_pkey" PRIMARY KEY, btree (id)
+-- Foreign-key constraints:
+--     "many_many_id" FOREIGN KEY (id) REFERENCES treatment(id)
+--     "patient_id_foreign" FOREIGN KEY (patient_id) REFERENCES patients(id)
+-- Referenced by:
+--     TABLE "treatment" CONSTRAINT "medical_history_id_foreign" FOREIGN KEY (id) REFERENCES medical_history(id)
+--     TABLE "medical_history_treatment" CONSTRAINT "medical_history_treatment_medical_history_id_fkey" FOREIGN KEY (medical_history_id) REFERENCES medical_history(id)
+\ d medical_history_treatment;
+
+--            Table "public.medical_history_treatment"
+--        Column       |  Type   | Collation | Nullable | Default
+-- --------------------+---------+-----------+----------+---------
+--  medical_history_id | integer |           | not null |
+--  treatment_id       | integer |           | not null |
+-- Indexes:
+--     "medical_history_treatment_pkey" PRIMARY KEY, btree (medical_history_id, treatment_id)
+-- Foreign-key constraints:
+--     "medical_history_treatment_medical_history_id_fkey" FOREIGN KEY (medical_history_id) REFERENCES medical_history(id)
+--     "medical_history_treatment_treatment_id_fkey" FOREIGN KEY (treatment_id) REFERENCES treatment(id)
+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
+/********************************************************************** Rita contribution **************************************************************************/
