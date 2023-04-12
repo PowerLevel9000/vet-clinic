@@ -80,3 +80,21 @@ CREATE TABLE medical_history_treatment (
 --     "medical_history_treatment_treatment_id_fkey" FOREIGN KEY (treatment_id) REFERENCES treatment(id)
 ------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------
 /********************************************************************** Rita contribution **************************************************************************/
+CREATE TABLE invoices (
+    id INT NOT NULL PRIMARY KEY,
+    total_amount decimal NOT NULL,
+    generated_at timestamp NOT NULL,
+    payed_at timestamp NOT NULL,
+    medical_histories_id INT NOT NULL
+)
+
+CREATE INDEX ON invoices (medical_histories_id);
+
+CREATE TABLE invoice_items (
+    id INT NOT NULL PRIMARY KEY,
+    unit_price decimal NOT NULL,
+    quantity INT NOT NULL,
+    total_price decimal NOT NULL,
+    invoice_id INT NOT NULL,
+    treatment_id INT NOT NULL, FOREIGN KEY (invoice_id) REFERENCES invoices(id), CONSTRAINT "treatment_id_foreign" FOREIGN KEY (treatment_id) REFERENCES treatment(id)
+)
